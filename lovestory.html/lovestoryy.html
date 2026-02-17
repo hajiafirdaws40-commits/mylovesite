@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A love story💖</title>
+<style>
+/* Cursor as COD crosshair */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="7" stroke="white" stroke-width="2" fill="none"/></svg>') 16 16, auto;
+}
+
+/* Screen shake */
+.shake {
+    animation: shakeScreen 0.5s;
+}
+@keyframes shakeScreen {
+    0% { transform: translate(0,0) rotate(0deg); }
+    20% { transform: translate(-5px,5px) rotate(-1deg); }
+    40% { transform: translate(5px,-5px) rotate(1deg); }
+    60% { transform: translate(-5px,5px) rotate(0deg); }
+    80% { transform: translate(5px,-5px) rotate(1deg); }
+    100% { transform: translate(0,0) rotate(0deg); }
+}
+
+.container {
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    width: 400px;
+    text-align: center;
+    position: relative;
+    border: 2px solid #00ff00;
+}
+
+h1 {
+    color: #00ff00;
+    text-shadow: 0 0 10px #0f0;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+}
+
+button:hover { transform: scale(1.2); }
+
+.yes { background: #ff0000; color: white; }
+.maybe { background: #ffa500; color: white; }
+.no { background: #555555; color: white; }
+
+#response {
+    margin-top: 20px;
+    font-size: 1.5em;
+    min-height: 40px;
+}
+
+/* Explosion hearts + sparks */
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity:1; }
+    100% { transform: translateY(-300px) rotate(360deg); opacity:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="gameContainer">
+    <h1 id="question">Festus, do you love me?</h1>
+
+    <div>
+        <button class="yes" onclick="answer('yes')">YES 💖</button>
+        <button class="maybe" onclick="answer('maybe')" id="maybeBtn">MAYBE 🤔</button>
+        <button class="no" id="noBtn">NO 😅</button>
+    </div>
+
+    <!-- Chat box -->
+    <div id="chatBox" style="margin-top:20px;">
+        <input type="text" id="userMessage" placeholder="Type your answer here..." style="width:70%; padding:8px; border-radius:5px; border:1px solid #ccc;">
+        <button onclick="sendMessage()" style="padding:8px 12px; border-radius:5px; background:#ff0000; color:white; border:none; cursor:pointer;">Send</button>
+    </div>
+    <div id="chatDisplay" style="margin-top:10px; min-height:40px; font-size:1em; color:#00ff00;"></div>
+
+    <div id="response"></div>
+</div>
+
+<script>
+const questions = [
+    "Festus, do you love me?",
+    "Would you choose me over everyone?",
+    "Will you stay with me forever?",
+    "Am I your favorite person?",
+    "Is your heart mine?"
+];
+let current = 0;
+
+const noBtn = document.getElementById("noBtn");
+const maybeBtn = document.getElementById("maybeBtn");
+const response = document.getElementById("response");
+const container = document.getElementById("gameContainer");
+
+function answer(choice){
+    if(choice === "yes"){
+        response.innerHTML = "💥 YES! Explosion of love! 💖";
+        createExplosion(30);
+        container.classList.add('shake');
+        setTimeout(()=>container.classList.remove('shake'),500);
+    }
+    else if(choice === "maybe"){
+        response.innerHTML = "🤔 Think harder!";
+        maybeBtn.style.animation = "shake 0.5s";
+        setTimeout(() => maybeBtn.style.animation = "", 500);
+    }
+    else{
+        response.innerHTML = "😅 NO! Try again!";
+    }
+
+    setTimeout(()=>{
+        current++;
+        if(current < questions.length){
+            document.getElementById("question").innerText = questions[current];
+            response.innerHTML = "";
+        } else {
+            document.getElementById("question").innerText = "All questions completed 💕";
+            response.innerHTML = "";
+        }
+    }, 2000);
+}
+
+// Heart + spark explosion
+function createExplosion(num){
+    for(let i=0;i<num;i++){
+        const particle = document.createElement("div");
+        particle.textContent = i%2==0?'❤️':'✨';
+        particle.style.position = "absolute";
+        particle.style.fontSize = `${Math.random()*20+15}px`;
+        particle.style.left = `${Math.random()*window.innerWidth}px`;
+        particle.style.top = `${Math.random()*window.innerHeight}px`;
+        particle.style.animation = `floatUp ${Math.random()*2+2}s ease-out forwards`;
+        document.body.appendChild(particle);
+        setTimeout(()=>particle.remove(),4000);
+    }
+}
+
+// NO button runs away
+noBtn.addEventListener("mouseover", ()=>{
+    noBtn.style.position = "absolute";
+    noBtn.style.left = Math.random()*(window.innerWidth - noBtn.offsetWidth) + "px";
+    noBtn.style.top = Math.random()*(window.innerHeight - noBtn.offsetHeight) + "px";
+});
+
+// Chat box
+function sendMessage(){
+    const input = document.getElementById("userMessage");
+    const display = document.getElementById("chatDisplay");
+    if(input.value.trim() !== ""){
+        display.innerHTML = "Festus says: " + input.value;
+        input.value = "";
+    }
+}
+</script>
+
+</body>
+</html>
